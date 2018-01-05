@@ -1,109 +1,86 @@
 import { Component } from '@angular/core';
-import { NavController, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Geofence } from '@ionic-native/geofence';
 import { SMS } from '@ionic-native/sms';
 import { Geolocation } from '@ionic-native/geolocation';
-import { EmailComposer } from '@ionic-native/email-composer';
 import { CallNumber } from '@ionic-native/call-number';
 
 import { ActivePage } from '../active/active';
+
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  emergencyNumber: any[] = ['0244612822','0267771306','0208234608'];
-  centralNumber: string = '0244588584';
-  centralEmail: any = 'pymira@gmail.com'
+  radius: number = 100;
   error: any;
-  success: any;
+  success:any;
 
-  constructor(public navCtrl: NavController,
-    private platform: Platform,
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    private platform: Platform, 
     private geofence: Geofence,
     private geolocation: Geolocation,
     private sms: SMS,
-    private email: EmailComposer,
     private call: CallNumber) {
-    this.platform.ready().then(() => {
-
-      geofence.initialize().then(
-        () => console.log('Geofence Plugin Ready'),
-        (err) => console.log(err)
-      );
-
-    });
+      this.platform.ready().then(() => {
+        
+     geofence.initialize().then(
+       () => console.log('Geofence Plugin Ready'),
+       (err) => console.log(err)
+     );
+     
+   });
   }
 
-  sendByEmail(phone: string, email: string) {
-    console.log('Submit geolocation via email');
-    /**
-     * get geolocation
-     * get emergency numbers
-     * send via email
-     */
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad SosPage');
+  }
 
+  setGeofence(value: number) {
     this.geolocation.getCurrentPosition({
       enableHighAccuracy: true
     }).then((resp) => {
-      let longitude = resp.coords.longitude;
-      let latitude = resp.coords.latitude;
-      let date = resp.timestamp;
+      var longitude = resp.coords.longitude;
+      var latitude = resp.coords.latitude;
+      var radius = value;
 
-      const phone = this.emergencyNumber,
-            sender = this.centralEmail,
-            to = 'hanson.peprah@outlook.com';
-
-      const fence = {
-        id: "001",
-        latitude: latitude,
-        longitude: longitude,
-        date: new Date(date),
-        emergencyNumber: this.emergencyNumber
-
-      }
-
-      // http.post() fence object to database here...
+      let fence = {
+          id: "myGeofenceID1", 
+          latitude:       latitude, 
+          longitude:      longitude,
+          radius:         radius,  
+          transitionType: 2,
+          phone: '0244588584, 0267771306'
+        }
       
-      //send fence via email
-      let email = {
-        to: [to,sender],
-        cc: ['akrongeconnect@gmail.com','ayekoalex@gmail.com','oswaldano@gmail.com'],
-        subject: 'FindMe Extreme Help',
-        body: JSON.stringify(fence),
-        isHtml: true
-      };
-      this.email.open(email);
-      
-      // send SMS
-      this.sms.send(phone, 'An emergency alert check email!!!');      
-    
-      console.log('data sent  >>>', fence);
-      console.log('Send email body >>>', email);
-      
-      this.navCtrl.push(ActivePage);
+        this.geofence.addOrUpdate(fence).then(
+          () => this.success = true,
+          (err) => this.error = "Failed to add or update the fence."
+        );
+
+        this.geofence.onTransitionReceived().subscribe(resp => {
+          this.sms.send('0244612822', JSON.stringify(fence));
+        });
+        console.log('setlocation >>>',fence);
+        this.navCtrl.push(ActivePage);
 
     }).catch((error) => {
       this.error = error;
       console.log('error: true', this.error);
     });
-
   }
-
-  callCentral() {
-    console.log('call our center ');
-    /**
-     * get geolocation
-     * get emergency numbers
-     * send via email
-     * save in db
-     * phone call to the center
-     */
-    this.call.callNumber(this.centralNumber, true)
+  
+  callCenter(value: number){
+    console.log('get value', value);
+    this.call.callNumber('024412822', true)
+    this.sms.send('0244588584', JSON.stringify(this.success))
     .then(() => console.log('Launched dialer!'))
     .catch(() => console.log('Error launching dialer'));
 
-    this.navCtrl.push(ActivePage);    
+    this.navCtrl.push(ActivePage);
   }
+
 }

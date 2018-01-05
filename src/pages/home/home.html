@@ -1,17 +1,22 @@
 <ion-content class="page">
-  <h1>Emergency</h1>
-  <div class="loader"></div>
-
   <div class="bottom-container">
-    <!-- <ion-item>
+      <h1>WifeAlert</h1>
+      <div class="loader"></div>
+    <ion-item>
       <ion-range [(ngModel)]="radius" #radiusVal min="40" max="300" color="primary" pin="true" snaps="true" step="20">
       </ion-range>
-    </ion-item> -->
-    <ion-label color="secondary" id="lbl">Set Emergency numbers</ion-label>
-    <button ion-button large outline block small (click)="sendByEmail()" id="cta" color="primary">Send Help</button>
-    <button ion-button large outline block small (click)="callCentral()" id="cta" color="primary">Call Central</button>
-    
+    </ion-item>
+    <ion-label color="secondary" id="lbl">Fence Parameter (Meters)</ion-label>
+    <button ion-button large outline block (click)="setGeofence(radiusVal.value)" id="cta" color="primary">Set Geofence</button>
+    <ion-col no-padding>
+      <button ion-button large outline block (click)="callCenter()" id="cta" color="primary">Call Office</button>
+    </ion-col>
+    <ion-col no-padding>
+      <button ion-button large outline block (click)="setGeofence()" id="cta" color="primary">Share Location</button>
+    </ion-col>
     <p *ngIf="error">{{ error }}</p>
 
   </div>
+ 
+ 
 </ion-content>

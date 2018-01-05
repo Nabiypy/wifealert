@@ -10,7 +10,6 @@ import { HomePage } from '../home/home';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
   selector: 'page-active',
   templateUrl: 'active.html',
