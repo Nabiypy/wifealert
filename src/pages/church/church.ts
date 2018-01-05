@@ -6,7 +6,6 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { CallNumber } from '@ionic-native/call-number';
 
 import { ActivePage } from '../active/active';
-import { SikafonePage } from '../sikafone/sikafone';
 
 
 @Component({
@@ -82,11 +81,6 @@ export class HomePage {
     .catch(() => console.log('Error launching dialer'));
 
     this.navCtrl.push(ActivePage);
-  }
-
-  sikafone():void {
-    console.log('sikafone forms')
-    this.navCtrl.push(SikafonePage);
   }
 
 }

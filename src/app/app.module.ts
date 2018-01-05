@@ -14,12 +14,14 @@ import { HttpModule } from '@angular/http';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ActivePage } from '../pages/active/active'
+import { SikafonePage } from '../pages/sikafone/sikafone'
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ActivePage
+    ActivePage,
+    SikafonePage
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,8 @@ import { ActivePage } from '../pages/active/active'
   entryComponents: [
     MyApp,
     HomePage,
-    ActivePage
+    ActivePage,
+    SikafonePage
   ],
   providers: [
     StatusBar,
